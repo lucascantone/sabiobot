@@ -7,6 +7,7 @@ __version__=json.loads(open("version.json").read())["version"]
 # The chat where the confessions are sended
 vinculed_chat_info=json.loads(open("chat.json").read())
 vinculed_chat=vinculed_chat_info["vinculed_chat_id"]
+vinculed_chat1=vinculed_chat_info["vinculed_chat_id1"]
 vinculed_chat_link=vinculed_chat_info["vinculed_chat_link"]
 vinculed_chat_name=vinculed_chat_info["vinculed_chat_name"]
 
@@ -25,8 +26,8 @@ def about_me(update, context):
         send_message(
             update,
             default="es",
-            en="Im an confession bot for channel's like t.me/Confesionario_anonimo.\r\nVersion_{0}\r\n\r\nMaded by @x93bd, github.com/borisd93/sabiobot".format(__version__),
-            es="Soy un bot de confesiones para canales como t.me/Confesionario_anonimo.\r\nVersion_{0}\r\n\r\nCreado por @x93bd, github.com/borisd93/sabiobot".format(__version__)
+            en="Im an confession bot for channel https://t.me/insane_arg.\r\nVersion_{0}\r\n\r\nMaded by @lucas181,".format(__version__),
+            es="Soy un bot de confesiones para el canal https://t.me/insane_arg.\r\nVersion_{0}\r\n\r\nCreado por @lucas181,".format(__version__)
         )
     )
 
@@ -46,7 +47,7 @@ def checkGroup(update):
         return 0
 
 def start(update, context):
-    update.message.reply_text(send_message(update, default="es", en="Welcome to the anonymous confessions bot", es="Bienvenido al bot de confesiones anonimas"), reply_markup=getCorrectMarkup(update))
+    update.message.reply_text(send_message(update, default="es", en="Welcome to the INSANE anonymous confessions bot", es="Bienvenido al bot de confesiones anonimas INSANE"), reply_markup=getCorrectMarkup(update))
     update.message.reply_text(send_message(update, default="es", en="You must be here <a href='"+vinculed_chat_name+"'>t.me/"+vinculed_chat_link+"</a>", es="Deberias estar aqui! <a href='"+vinculed_chat_name+"'>t.me/"+vinculed_chat_link+"</a>"), parse_mode="html")
 
 def handleMessages(update, context):
@@ -56,6 +57,7 @@ def handleMessages(update, context):
     else:
         # Send's the confession to the vinculed chat
         context.bot.send_message(chat_id=vinculed_chat, text=update.message.text)
+        context.bot.send_message(chat_id=vinculed_chat1, text=update.message.text)
         update.message.reply_text(send_message(update, default="es", en="🛫 Sended", es="🛫 Enviado"), reply_markup=getCorrectMarkup(update))
 
 def handleBadCommands(update, context):
@@ -68,13 +70,13 @@ def handleVoice(update, context):
     if update.message.voice.duration>=300:
         update.message.reply_text(send_message(update, default="es", en="You can only send a voice message of less than five minutes", es="Solo puedes mandar un mensaje de voz de menos de cinco minutos"))
     else:
-        context.bot.send_voice(voice=update.message.voice.file_id, chat_id=vinculed_chat, caption="@sabio_conf_bot")
+        context.bot.send_voice(voice=update.message.voice.file_id, chat_id=vinculed_chat, caption="@ConfeINSANEbot")
 
 def handleAudio(update, context):
     if update.message.audio.duration>=300:
         update.message.reply_text(send_message(update, default="es", en="You can only send a voice message of less than five minutes", es="Solo puedes mandar un mensaje de voz de menos de cinco minutos"))
     else:
-        context.bot.send_audio(audio=update.message.audio.file_id, chat_id=vinculed_chat, caption=update.message.audio.title+"\r\n\r\n@sabio_conf_bot")
+        context.bot.send_audio(audio=update.message.audio.file_id, chat_id=vinculed_chat, caption=update.message.audio.title+"\r\n\r\n@ConfeINSANEbot")
 
 
 # The bot updater
