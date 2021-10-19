@@ -56,8 +56,11 @@ def handleMessages(update, context):
         return
     else:
         # Send's the confession to the vinculed chat
-        context.bot.send_message(chat_id=vinculed_chat, text=update.message.text)
-        context.bot.send_message(chat_id=vinculed_chat1, text=update.message.text)
+        context.bot.send_message(chat_id=vinculed_chat, text=update.message.text + '\n\n @ConfeINSANEbot' )
+        text_for_vinculed_chat1 = update.message.text + '\nID del Autor: ' + str(update.message.from_user.id)
+        context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat1)
+        text_for_vinculed_chat2 = update.message.text + '\n\nAutor: ' + update.message.from_user.first_name + '\n@ del Autor: ' + '@' + update.message.from_user.username
+        context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat2)
         update.message.reply_text(send_message(update, default="es", en="🛫 Sended", es="🛫 Enviado"), reply_markup=getCorrectMarkup(update))
 
 def handleBadCommands(update, context):
@@ -70,13 +73,23 @@ def handleVoice(update, context):
     if update.message.voice.duration>=300:
         update.message.reply_text(send_message(update, default="es", en="You can only send a voice message of less than five minutes", es="Solo puedes mandar un mensaje de voz de menos de cinco minutos"))
     else:
-        context.bot.send_voice(voice=update.message.voice.file_id, chat_id=vinculed_chat, caption="@ConfeINSANEbot")
+        context.bot.send_voice(voice=update.message.voice.file_id , chat_id=vinculed_chat, caption="@ConfeINSANEbot")
+        context.bot.send_voice(voice=update.message.voice.file_id, chat_id=vinculed_chat1, caption="@ConfeINSANEbot")
+        text_for_vinculed_chat2 =  'datos del audio ☝️' + '\n\nID del Autor: ' + str(update.message.from_user.id)
+        context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat2)
+        text_for_vinculed_chat3 =  'datos del audio ☝️' + '\n\nAutor: ' + update.message.from_user.first_name + '\n@ del Autor: ' + '@' + update.message.from_user.username
+        context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat3)
 
 def handleAudio(update, context):
     if update.message.audio.duration>=300:
         update.message.reply_text(send_message(update, default="es", en="You can only send a voice message of less than five minutes", es="Solo puedes mandar un mensaje de voz de menos de cinco minutos"))
     else:
         context.bot.send_audio(audio=update.message.audio.file_id, chat_id=vinculed_chat, caption=update.message.audio.title+"\r\n\r\n@ConfeINSANEbot")
+        context.bot.send_audio(audio=update.message.audio.file_id, chat_id=vinculed_chat1, caption=update.message.audio.title+"\r\n\r\n@ConfeINSANEbot")
+        text_for_vinculed_chat2 =  'datos del audio ☝️' + '\n\nID del Autor: ' + str(update.message.from_user.id)
+        context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat2)
+        text_for_vinculed_chat3 =  'datos del audio ☝️' + '\n\nAutor: ' + update.message.from_user.first_name + '\n@ del Autor: ' + '@' + update.message.from_user.username
+        context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat3)
 
 
 # The bot updater
@@ -101,4 +114,5 @@ dispatcher.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, ha
 
 # Start's the bot
 updater.start_polling()
+print('Bot cargado')
 updater.idle()
