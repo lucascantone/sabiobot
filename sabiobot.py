@@ -11,6 +11,15 @@ vinculed_chat1=vinculed_chat_info["vinculed_chat_id1"]
 vinculed_chat_link=vinculed_chat_info["vinculed_chat_link"]
 vinculed_chat_name=vinculed_chat_info["vinculed_chat_name"]
 
+def ban(update, context):
+	if update.message.from_user.id not in vinculed_chat_info["admins_allowed"]:
+		return
+	user_id = update.message.reply_to_message.from_user.id
+	context.bot.ban_chat_member(chat_id = vinculed_chat, user_id = user_id)
+	vinculed_chat_info["users_banned_forever"].append(user_id)
+	with open("chat.json", "w") as file:
+		json.dump(vinculed_chat_info, file)
+
 def send_message(update, default, **dict):
     if update.message.from_user.language_code in dict:
         return dict[update.message.from_user.language_code]
@@ -19,9 +28,15 @@ def send_message(update, default, **dict):
 
 # Reply Markup Handlers
 def how_confess(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     update.message.reply_text(send_message(update, default="es", en="📖 It's easy, just send your confession.", es="📖 Es facil, solo manda tu confesion."))
 
 def about_me(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     update.message.reply_text(
         send_message(
             update,
@@ -47,10 +62,16 @@ def checkGroup(update):
         return 0
 
 def start(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     update.message.reply_text(send_message(update, default="es", en="Welcome to the INSANE anonymous confessions bot", es="Bienvenido al bot de confesiones anonimas INSANE"), reply_markup=getCorrectMarkup(update))
     update.message.reply_text(send_message(update, default="es", en="You must be here <a href='"+vinculed_chat_name+"'>t.me/"+vinculed_chat_link+"</a>", es="Deberias estar aqui! <a href='"+vinculed_chat_name+"'>t.me/"+vinculed_chat_link+"</a>"), parse_mode="html")
 
 def handleMessages(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     # Get's if the bot are in a group
     if "-" in str(update.effective_message.chat_id):
         return
@@ -64,12 +85,18 @@ def handleMessages(update, context):
         update.message.reply_text(send_message(update, default="es", en="🛫 Sended", es="🛫 Enviado"), reply_markup=getCorrectMarkup(update))
 
 def handleBadCommands(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     if checkGroup(update)==1:
         return
     else:
         update.message.reply_text(send_message(update, default="es", en="Invalid Command", es="Comando incorrecto"), reply_markup=getCorrectMarkup(update))
 
 def handleVoice(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     if update.message.voice.duration>=300:
         update.message.reply_text(send_message(update, default="es", en="You can only send a voice message of less than five minutes", es="Solo puedes mandar un mensaje de voz de menos de cinco minutos"))
     else:
@@ -81,6 +108,9 @@ def handleVoice(update, context):
         context.bot.send_message(chat_id=vinculed_chat1, text=text_for_vinculed_chat3)
 
 def handleAudio(update, context):
+    if update.message.from_user.id in vinculed_chat_info["users_banned_forever"]:
+    	update.message.reply_text(send_message(update, default="es", en="You have been banned forever.", es="Has sido baneado para siempre por MMWVO."))
+    	return
     if update.message.audio.duration>=300:
         update.message.reply_text(send_message(update, default="es", en="You can only send a voice message of less than five minutes", es="Solo puedes mandar un mensaje de voz de menos de cinco minutos"))
     else:
@@ -98,6 +128,8 @@ dispatcher=updater.dispatcher
 
 # An handler for the /start command
 dispatcher.add_handler(telegram.ext.CommandHandler("start", start))
+
+dispatcher.add_handler(telegram.ext.CommandHandler("ban", ban))
 
 for i in list(reply_markup_en.keys()):
     dispatcher.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.regex(i), reply_markup_en[i]))
